@@ -10,6 +10,7 @@ import { FinanceProvider } from "./context/FinanceContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { SidebarProvider } from "./context/SidebarContext";
 import { AuthProvider } from "./context/AuthContext";
+import { AnimatePresence } from "framer-motion";
 
 function App() {
   const [loading, setLoading] =
@@ -23,10 +24,6 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) {
-    return <Preloader />;
-  }
-
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -34,7 +31,13 @@ function App() {
           <FinanceProvider>
             <BrowserRouter>
               <Toaster position="top-right" />
-              <AppRoutes />
+              <AnimatePresence mode="wait">
+                {loading ? (
+                  <Preloader key="preloader" />
+                ) : (
+                  <AppRoutes key="app" />
+                )}
+              </AnimatePresence>
             </BrowserRouter>
           </FinanceProvider>
         </SidebarProvider>

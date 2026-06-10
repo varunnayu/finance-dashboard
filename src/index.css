@@ -217,3 +217,15 @@ body.dark {
     transparent 55%
   );
 }
+
+:root {
+  --legend-bg: rgba(255, 255, 255, 0.9);
+  --legend-border: rgba(148, 163, 184, 0.25);
+  --legend-text: #1e293b;
+}
+
+.dark {
+  --legend-bg: rgba(10, 15, 30, 0.9);
+  --legend-border: rgba(255, 255, 255, 0.08);
+  --legend-text: #f1f5f9;
+}

@@ -1,5 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useAuth } from "./AuthContext";
+
+import {
+    addTransactionToFirestore,
+    getTransactionsFromFirestore,
+    deleteTransactionFromFirestore,
+    updateTransactionInFirestore,
+} from "../services/transactionService";
+
+
 
 const FinanceContext = createContext();
 
@@ -43,7 +53,7 @@ export const FinanceProvider = ({ children }) => {
                 setIsSyncing(true);
                 // Simulate cloud database upload latency
                 await new Promise((resolve) => setTimeout(resolve, 1500));
-                
+
                 toast.success(`Cloud Synced: Uploaded ${syncQueue.length} offline operation(s)`);
                 setSyncQueue([]);
                 localStorage.removeItem("sync_queue");
@@ -126,6 +136,39 @@ export const FinanceProvider = ({ children }) => {
         }
     };
 
+    const [budgets, setBudgets] = useState(() => {
+        const saved =
+            localStorage.getItem("budgets");
+
+        return saved
+            ? JSON.parse(saved)
+            : [];
+    });
+    useEffect(() => {
+        localStorage.setItem(
+            "budgets",
+            JSON.stringify(budgets)
+        );
+    }, [budgets]);
+    const addBudget = (budget) => {
+        const newBudget = {
+            id: Date.now(),
+            ...budget,
+        };
+
+        setBudgets((prev) => [
+            ...prev,
+            newBudget,
+        ]);
+    };
+
+    const deleteBudget = (id) => {
+        setBudgets((prev) =>
+            prev.filter(
+                (budget) => budget.id !== id
+            )
+        );
+    };
     const income = transactions
         .filter((t) => t.type === "income")
         .reduce((acc, curr) => acc + Number(curr.amount), 0);
@@ -143,9 +186,15 @@ export const FinanceProvider = ({ children }) => {
                 addTransaction,
                 deleteTransaction,
                 updateTransaction,
+
+                budgets,
+                addBudget,
+                deleteBudget,
+
                 income,
                 expense,
                 balance,
+
                 isOnline,
                 isSyncing,
                 syncQueueLength: syncQueue.length,

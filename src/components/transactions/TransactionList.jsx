@@ -5,9 +5,28 @@ import DeleteModal from "../modals/DeleteModal";
 import { FaTrash, FaPen, FaArrowUp, FaArrowDown } from "react-icons/fa";
 
 const TransactionList = ({ transactions, onEdit }) => {
-    const { deleteTransaction } = useFinance();
+    const { deleteTransaction, transactions: allTransactions } = useFinance();
     const [showModal, setShowModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
+
+    // Sort all transactions chronologically to calculate stable historical running balances
+    const sorted = [...allTransactions].sort((a, b) => {
+        const dateA = new Date(a.date || 0);
+        const dateB = new Date(b.date || 0);
+        if (dateA - dateB !== 0) return dateA - dateB;
+        return (a.id || 0) - (b.id || 0);
+    });
+
+    let currentBalance = 0;
+    const balanceMap = {};
+    sorted.forEach((item) => {
+        if (item.type === "income") {
+            currentBalance += Number(item.amount);
+        } else {
+            currentBalance -= Number(item.amount);
+        }
+        balanceMap[item.id] = currentBalance;
+    });
 
     const handleDeleteClick = (id) => {
         setDeleteId(id);
@@ -68,75 +87,82 @@ const TransactionList = ({ transactions, onEdit }) => {
                     </div>
                 ) : (
                     <div className="space-y-3">
-                        {transactions.map((item) => (
-                            <div
-                                key={item.id}
-                                className="
-                                    flex
-                                    flex-col
-                                    sm:flex-row
-                                    sm:items-center
-                                    justify-between
-                                    gap-4
-                                    bg-white/20
-                                    dark:bg-white/2
-                                    backdrop-blur-md
-                                    border
-                                    border-slate-200/35
-                                    dark:border-white/5
-                                    rounded-2xl
-                                    p-4
-                                    hover:shadow-md
-                                    hover:bg-white/35
-                                    dark:hover:bg-white/5
-                                    hover:scale-[1.005]
-                                    transition-all
-                                    duration-300
-                                "
-                            >
-                                <div className="flex items-center gap-3">
-                                    {/* Small circle indicator with arrow depending on type */}
-                                    <div className={`
-                                        w-10
-                                        h-10
-                                        rounded-xl
+                        {transactions.map((item) => {
+                            const runningBal = balanceMap[item.id] !== undefined ? balanceMap[item.id] : 0;
+                            return (
+                                <div
+                                    key={item.id}
+                                    className="
                                         flex
-                                        items-center
-                                        justify-center
-                                        text-xs
-                                        ${item.type === "income"
-                                            ? "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400"
-                                            : "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400"
-                                        }
-                                    `}>
-                                        {item.type === "income" ? <FaArrowUp /> : <FaArrowDown />}
-                                    </div>
+                                        flex-col
+                                        sm:flex-row
+                                        sm:items-center
+                                        justify-between
+                                        gap-4
+                                        bg-white/20
+                                        dark:bg-white/2
+                                        backdrop-blur-md
+                                        border
+                                        border-slate-200/35
+                                        dark:border-white/5
+                                        rounded-2xl
+                                        p-4
+                                        hover:shadow-md
+                                        hover:bg-white/35
+                                        dark:hover:bg-white/5
+                                        hover:scale-[1.005]
+                                        transition-all
+                                        duration-300
+                                    "
+                                >
+                                    <div className="flex items-center gap-3">
+                                        {/* Small circle indicator with arrow depending on type */}
+                                        <div className={`
+                                            w-10
+                                            h-10
+                                            rounded-xl
+                                            flex
+                                            items-center
+                                            justify-center
+                                            text-xs
+                                            ${item.type === "income"
+                                                ? "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400"
+                                                : "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400"
+                                            }
+                                        `}>
+                                            {item.type === "income" ? <FaArrowUp /> : <FaArrowDown />}
+                                        </div>
 
-                                    <div>
-                                        <h3 className="font-bold text-sm text-slate-800 dark:text-white">
-                                            {item.title}
-                                        </h3>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${getCategoryStyles(item.category)}`}>
-                                                {item.category}
-                                            </span>
-                                            <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
-                                                {item.date}
-                                            </span>
+                                        <div>
+                                            <h3 className="font-bold text-sm text-slate-800 dark:text-white">
+                                                {item.title}
+                                            </h3>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${getCategoryStyles(item.category)}`}>
+                                                    {item.category}
+                                                </span>
+                                                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
+                                                    {item.date}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="flex items-center gap-3 justify-between sm:justify-end">
-                                    <span
-                                        className={`font-black text-sm tracking-tight ${item.type === "income"
-                                            ? "text-emerald-600 dark:text-emerald-400"
-                                            : "text-rose-600 dark:text-rose-400"
-                                        }`}
-                                    >
-                                        {item.type === "income" ? "+" : "-"} ₹
-                                        {Number(item.amount).toLocaleString("en-IN")}
-                                    </span>
+                                    <div className="flex items-center gap-3 justify-between sm:justify-end">
+                                        <div className="text-right flex flex-col items-end">
+                                            <span
+                                                className={`font-black text-sm tracking-tight ${item.type === "income"
+                                                    ? "text-emerald-600 dark:text-emerald-400"
+                                                    : "text-rose-600 dark:text-rose-400"
+                                                }`}
+                                            >
+                                                {item.type === "income" ? "+" : "-"} ₹
+                                                {Number(item.amount).toLocaleString("en-IN")}
+                                            </span>
+                                            <span className="text-[10px] font-extrabold text-slate-400 dark:text-slate-500 mt-0.5">
+                                                Bal: ₹{runningBal.toLocaleString("en-IN")}
+                                            </span>
+                                        </div>
 
                                     <div className="flex items-center gap-2">
                                         <button
@@ -175,7 +201,7 @@ const TransactionList = ({ transactions, onEdit }) => {
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                        )})}
                     </div>
                 )}
             </div>

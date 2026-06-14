@@ -11,7 +11,6 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { SidebarProvider } from "./context/SidebarContext";
 import { AuthProvider } from "./context/AuthContext";
 import { AnimatePresence } from "framer-motion";
-
 function App() {
   const [loading, setLoading] =
     useState(true);

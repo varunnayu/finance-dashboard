@@ -10,6 +10,14 @@ import StatCard from "../ui/StatCard";
 import RecentTransactions from "./RecentTransactions";
 import { useFinance } from "../../context/FinanceContext";
 import { motion } from "framer-motion";
+import AIRecommendationCard from "./AIRecommendationCard";
+import HealthWidget from "./HealthWidget";
+import ExpenseTrendChart from "./ExpenseTrendChart";
+import TopCategories from "./TopCategories";
+import MonthlySummary from "./MonthlySummary";
+import ExportReportButton
+    from "./ExportReportButton";
+
 
 const Dashboard = () => {
     const {
@@ -27,13 +35,18 @@ const Dashboard = () => {
             className="space-y-8"
         >
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-                    Dashboard
-                </h1>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    Your real-time financial tracking summary.
-                </p>
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-3xl font-black">
+                        Dashboard
+                    </h1>
+
+                    <p className="text-sm text-slate-500">
+                        Your real-time financial tracking summary.
+                    </p>
+                </div>
+
+                <ExportReportButton />
             </div>
 
             {/* Statistics Cards */}
@@ -66,6 +79,17 @@ const Dashboard = () => {
                     bgColor="bg-gradient-to-r from-purple-500 to-pink-600"
                 />
             </div>
+            <div className="grid lg:grid-cols-2 gap-6 mt-6">
+                <ExpenseTrendChart />
+                <TopCategories />
+            </div>
+
+            <MonthlySummary />
+            <div className="grid lg:grid-cols-2 gap-6 mt-6">
+                <HealthWidget />
+                <AIRecommendationCard />
+            </div>
+
 
             {/* Recent Transactions Section */}
             <div>

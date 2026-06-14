@@ -3,6 +3,8 @@ import { useFinance } from "../../context/FinanceContext";
 import toast from "react-hot-toast";
 import Dropdown from "../ui/Dropdown";
 
+const PREDEFINED_LIST = ["Food", "Travel", "Shopping", "Bills", "Health", "Education", "Salary"];
+
 const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
     const { addTransaction, updateTransaction } = useFinance();
 
@@ -14,16 +16,24 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
         date: new Date().toISOString().split('T')[0],
     });
 
+    const [customCategory, setCustomCategory] = useState("");
+
     // Effect to populate form when editing is active
     useEffect(() => {
         if (editingTransaction) {
+            const isPredefined = PREDEFINED_LIST.includes(editingTransaction.category);
             setFormData({
                 title: editingTransaction.title,
                 amount: editingTransaction.amount.toString(),
-                category: editingTransaction.category,
+                category: isPredefined ? editingTransaction.category : "custom",
                 type: editingTransaction.type,
                 date: editingTransaction.date || new Date().toISOString().split('T')[0],
             });
+            if (!isPredefined) {
+                setCustomCategory(editingTransaction.category);
+            } else {
+                setCustomCategory("");
+            }
         }
     }, [editingTransaction]);
 
@@ -42,10 +52,15 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
             return;
         }
 
+        if (formData.category === "custom" && !customCategory.trim()) {
+            toast.error("Please enter a custom category name");
+            return;
+        }
+
         const transactionData = {
             title: formData.title,
             amount: Number(formData.amount),
-            category: formData.category,
+            category: formData.category === "custom" ? customCategory.trim() : formData.category,
             type: formData.type,
             date: formData.date || new Date().toISOString().split('T')[0],
         };
@@ -70,6 +85,7 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
             type: "expense",
             date: new Date().toISOString().split('T')[0],
         });
+        setCustomCategory("");
     };
 
     const handleCancelEdit = () => {
@@ -81,6 +97,7 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
             type: "expense",
             date: new Date().toISOString().split('T')[0],
         });
+        setCustomCategory("");
     };
 
     const isEditing = !!editingTransaction;
@@ -151,9 +168,24 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
                             { value: "Health", label: "Health" },
                             { value: "Education", label: "Education" },
                             { value: "Salary", label: "Salary" },
+                            { value: "custom", label: "Custom Category..." },
                         ]}
                     />
                 </div>
+
+                {formData.category === "custom" && (
+                    <div className="flex flex-col md:col-span-2">
+                        <label className="text-xs font-semibold text-slate-400 mb-1 ml-1">Custom Category Name</label>
+                        <input
+                            type="text"
+                            placeholder="Enter custom category"
+                            value={customCategory}
+                            onChange={(e) => setCustomCategory(e.target.value)}
+                            className="glass-input p-3.5 rounded-2xl text-sm text-slate-800 dark:text-white dark:bg-slate-900/40"
+                            required
+                        />
+                    </div>
+                )}
 
                 <div className="flex flex-col md:col-span-2">
                     <label className="text-xs font-semibold text-slate-400 mb-1 ml-1">Transaction Type</label>

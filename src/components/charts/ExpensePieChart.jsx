@@ -16,7 +16,11 @@ const COLORS = {
     Bills: "#f43f5e",     // Rose
     Health: "#14b8a6",    // Teal
     Education: "#6366f1",  // Indigo
-    Salary: "#10b981"     // Emerald
+    Salary: "#10b981",    // Emerald
+    Given: "#f97316",     // Orange
+    Spent: "#ef4444",     // Red
+    Received: "#22c55e",  // Green
+    Paylater: "#8b5cf6"   // Violet
 };
 
 const DEFAULT_COLOR = "#64748b";

@@ -1,71 +1,27 @@
-import {
-    collection,
-    addDoc,
-    getDocs,
-    deleteDoc,
-    updateDoc,
-    doc,
-} from "firebase/firestore";
-
+import { ref, set, push, get, remove, update } from "firebase/database";
 import { db } from "../firebase/firebase";
 
-export const addTransactionToFirestore = async (
-    userId,
-    transaction
-) => {
-    const docRef = await addDoc(
-        collection(
-            db,
-            "users",
-            userId,
-            "transactions"
-        ),
-        transaction
-    );
-
-    return docRef.id;
+export const addTransactionToFirestore = async (userId, transaction) => {
+    const newTxRef = push(ref(db, `users/${userId}/transactions`));
+    await set(newTxRef, transaction);
+    return newTxRef.key;
 };
 
-export const getTransactionsFromFirestore =
-    async (userId) => {
-        const snapshot = await getDocs(
-            collection(
-                db,
-                "users",
-                userId,
-                "transactions"
-            )
-        );
+export const getTransactionsFromFirestore = async (userId) => {
+    const snapshot = await get(ref(db, `users/${userId}/transactions`));
+    if (!snapshot.exists()) return [];
+    const data = snapshot.val();
+    return Object.entries(data).map(([id, val]) => ({
+        id,
+        ...val,
+    }));
+};
 
-        return snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-    };
+export const deleteTransactionFromFirestore = async (userId, transactionId) => {
+    await remove(ref(db, `users/${userId}/transactions/${transactionId}`));
+};
 
-export const deleteTransactionFromFirestore =
-    async (userId, transactionId) => {
-        await deleteDoc(
-            doc(
-                db,
-                "users",
-                userId,
-                "transactions",
-                transactionId
-            )
-        );
-    };
-
-export const updateTransactionInFirestore =
-    async (userId, transaction) => {
-        await updateDoc(
-            doc(
-                db,
-                "users",
-                userId,
-                "transactions",
-                transaction.id
-            ),
-            transaction
-        );
-    };
+export const updateTransactionInFirestore = async (userId, transaction) => {
+    const { id, ...data } = transaction;
+    await update(ref(db, `users/${userId}/transactions/${id}`), data);
+};

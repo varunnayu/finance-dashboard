@@ -1,7 +1,7 @@
 import React from "react";
 import { useFinance } from "../../context/FinanceContext";
 import { motion } from "framer-motion";
-import { Trash2, AlertOctagon, CheckCircle2, AlertTriangle, ShoppingBag, Utensils, Car, Lightbulb, Grid } from "lucide-react";
+import { Trash2, AlertOctagon, CheckCircle2, AlertTriangle, ShoppingBag, Utensils, Car, Lightbulb, Grid, Gift, Wallet, Coins, CreditCard } from "lucide-react";
 import toast from "react-hot-toast";
 
 const categoryMeta = {
@@ -12,6 +12,10 @@ const categoryMeta = {
     utilities: { icon: <Lightbulb className="w-4 h-4" />, text: "text-orange-500", bg: "bg-orange-500/10" },
     transport: { icon: <Car className="w-4 h-4" />, text: "text-blue-500", bg: "bg-blue-500/10" },
     travel: { icon: <Car className="w-4 h-4" />, text: "text-blue-500", bg: "bg-blue-500/10" },
+    given: { icon: <Gift className="w-4 h-4" />, text: "text-amber-500", bg: "bg-amber-500/10" },
+    spent: { icon: <Wallet className="w-4 h-4" />, text: "text-rose-500", bg: "bg-rose-500/10" },
+    received: { icon: <Coins className="w-4 h-4" />, text: "text-emerald-500", bg: "bg-emerald-500/10" },
+    paylater: { icon: <CreditCard className="w-4 h-4" />, text: "text-purple-500", bg: "bg-purple-500/10" },
     other: { icon: <Grid className="w-4 h-4" />, text: "text-slate-500", bg: "bg-slate-500/10" },
 };
 

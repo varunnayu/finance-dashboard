@@ -15,6 +15,10 @@ const PREDEFINED_CATEGORIES = [
     "Entertainment",
     "Housing",
     "Health",
+    "Given",
+    "Spent",
+    "Received",
+    "Paylater",
     "Other"
 ];
 

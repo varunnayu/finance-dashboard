@@ -3,7 +3,7 @@ import { useFinance } from "../../context/FinanceContext";
 import toast from "react-hot-toast";
 import Dropdown from "../ui/Dropdown";
 
-const PREDEFINED_LIST = ["Food", "Travel", "Shopping", "Bills", "Health", "Education", "Salary"];
+const PREDEFINED_LIST = ["Food", "Travel", "Shopping", "Bills", "Health", "Education", "Salary", "Given", "Spent", "Received", "Paylater"];
 
 const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
     const { addTransaction, updateTransaction } = useFinance();
@@ -168,6 +168,10 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
                             { value: "Health", label: "Health" },
                             { value: "Education", label: "Education" },
                             { value: "Salary", label: "Salary" },
+                            { value: "Given", label: "Given" },
+                            { value: "Spent", label: "Spent" },
+                            { value: "Received", label: "Received" },
+                            { value: "Paylater", label: "Paylater" },
                             { value: "custom", label: "Custom Category..." },
                         ]}
                     />

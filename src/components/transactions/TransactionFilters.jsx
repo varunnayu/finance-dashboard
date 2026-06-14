@@ -38,6 +38,10 @@ const TransactionFilters = ({
                         { value: "Health", label: "Health" },
                         { value: "Education", label: "Education" },
                         { value: "Salary", label: "Salary" },
+                        { value: "Given", label: "Given" },
+                        { value: "Spent", label: "Spent" },
+                        { value: "Received", label: "Received" },
+                        { value: "Paylater", label: "Paylater" },
                     ]}
                 />
             </div>

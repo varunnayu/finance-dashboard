@@ -61,6 +61,14 @@ const TransactionList = ({ transactions, onEdit }) => {
                 return "bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border border-indigo-500/10";
             case "Salary":
                 return "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/10";
+            case "Given":
+                return "bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400 border border-orange-500/10";
+            case "Spent":
+                return "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400 border border-red-500/10";
+            case "Received":
+                return "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/10";
+            case "Paylater":
+                return "bg-purple-500/10 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 border border-purple-500/10";
             default:
                 return "bg-slate-500/10 text-slate-600 dark:bg-slate-500/20 dark:text-slate-400 border border-slate-500/10";
         }

@@ -76,8 +76,8 @@ const Preloader = () => {
                         {/* Letter F Middle Bar */}
                         <motion.path
                             d="M 32 38 H 42"
-                            stroke="url(#logoGrad)"
-                            strokeWidth="3"
+                            stroke="#ffffff"
+                            strokeWidth="3.5"
                             strokeLinecap="round"
                             initial={{ pathLength: 0, opacity: 0 }}
                             animate={{ pathLength: 1, opacity: 1 }}

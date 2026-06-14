@@ -12,7 +12,6 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { loginAsDemo } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -40,13 +39,6 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    // Bypasses firebase login for easy demo inspection
-    const handleDemoBypass = () => {
-        loginAsDemo();
-        toast.success("Demo Mode Active: Redirecting to Dashboard");
-        navigate("/");
     };
 
     return (
@@ -181,31 +173,6 @@ const Login = () => {
                     >
                         <FaGoogle className="text-rose-500 w-3.5 h-3.5" />
                         <span>Google Sign In</span>
-                    </button>
-
-                    {/* Guest Bypass button */}
-                    <button
-                        onClick={handleDemoBypass}
-                        className="
-                            w-full
-                            py-3
-                            rounded-2xl
-                            font-bold
-                            text-xs
-                            text-brand-500
-                            dark:text-brand-400
-                            bg-brand-500/10
-                            hover:bg-brand-500/20
-                            flex
-                            items-center
-                            justify-center
-                            gap-2
-                            transition-all
-                            cursor-pointer
-                        "
-                    >
-                        <FaMicrochip className="w-3.5 h-3.5 animate-pulse" />
-                        <span>Demo Account Bypass</span>
                     </button>
                 </div>
 

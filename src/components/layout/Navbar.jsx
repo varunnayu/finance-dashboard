@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { FaBars, FaRegBell, FaCloud, FaSync, FaExclamationTriangle } from "react-icons/fa";
 import { useSidebar } from "../../context/SidebarContext";
-import { useFinance } from "../../context/FinanceContext";
+import { useFinance, ENABLE_BUDGETS } from "../../context/FinanceContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
@@ -162,10 +162,12 @@ const Navbar = () => {
                             >
                                 <h3 className="font-bold text-xs text-slate-800 dark:text-white mb-2">Notifications</h3>
                                 <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                                    <div className="p-2.5 rounded-xl bg-slate-900/5 dark:bg-white/5 border border-slate-200/20 dark:border-white/5 text-[11px] leading-relaxed text-slate-700 dark:text-slate-300">
-                                        <div className="font-bold text-[10px] text-brand-500 mb-0.5">Budget Alert</div>
-                                        Food expenses are at 85% of budget.
-                                    </div>
+                                    {ENABLE_BUDGETS && (
+                                        <div className="p-2.5 rounded-xl bg-slate-900/5 dark:bg-white/5 border border-slate-200/20 dark:border-white/5 text-[11px] leading-relaxed text-slate-700 dark:text-slate-300">
+                                            <div className="font-bold text-[10px] text-brand-500 mb-0.5">Budget Alert</div>
+                                            Food expenses are at 85% of budget.
+                                        </div>
+                                    )}
                                     <div className="p-2.5 rounded-xl bg-slate-900/5 dark:bg-white/5 border border-slate-200/20 dark:border-white/5 text-[11px] leading-relaxed text-slate-700 dark:text-slate-300">
                                         <div className="font-bold text-[10px] text-emerald-500 mb-0.5">Cloud Sync</div>
                                         Offline ledger queue synced successfully.

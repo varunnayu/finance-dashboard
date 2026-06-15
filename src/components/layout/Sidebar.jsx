@@ -14,6 +14,7 @@ import { useSidebar } from "../../context/SidebarContext";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import { ScanLine } from "lucide-react";
+import { ENABLE_BUDGETS } from "../../context/FinanceContext";
 
 const Sidebar = () => {
     const { closeSidebar } = useSidebar();
@@ -59,7 +60,7 @@ const Sidebar = () => {
             label: "Goals",
             icon: <FaBullseye className="w-5 h-5" />,
         },
-        {
+        ENABLE_BUDGETS && {
             path: "/budgets",
             label: "Budgets",
             icon: <Wallet className="w-5 h-5" />,
@@ -69,7 +70,7 @@ const Sidebar = () => {
             label: "Receipt Scanner",
             icon: <ScanLine className="w-5 h-5" />,
         }
-    ];
+    ].filter(Boolean);
 
     return (
         <aside

@@ -9,6 +9,8 @@ import {
     updateTransactionInFirestore,
 } from "../services/transactionService";
 
+export const ENABLE_BUDGETS = false;
+
 const FinanceContext = createContext();
 
 export const FinanceProvider = ({ children }) => {

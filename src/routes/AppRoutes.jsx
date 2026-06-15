@@ -14,6 +14,7 @@ import Register from "../pages/Auth/Register";
 import ProtectedRoute from "./ProtectedRoute";
 import Layout from "../components/layout/Layout";
 import OCR from "../pages/OCR/OCR";
+import { ENABLE_BUDGETS } from "../context/FinanceContext";
 
 
 const AppRoutes = () => {
@@ -59,10 +60,12 @@ const AppRoutes = () => {
                                 />
 
                                 {/* NEW BUDGET PAGE */}
-                                <Route
-                                    path="/budgets"
-                                    element={<Budgets />}
-                                />
+                                {ENABLE_BUDGETS && (
+                                    <Route
+                                        path="/budgets"
+                                        element={<Budgets />}
+                                    />
+                                )}
                                 <Route
                                     path="*"
                                     element={

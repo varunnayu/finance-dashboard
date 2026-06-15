@@ -103,9 +103,9 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
     const isEditing = !!editingTransaction;
 
     return (
-        <div className="glass-panel p-6 border border-slate-200/40 dark:border-white/5 relative overflow-hidden">
+        <div className="glass-panel p-6 border border-slate-200/40 dark:border-white/5 relative">
             {/* Ambient accent strip for edit vs add mode */}
-            <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${
+            <div className={`absolute top-0 left-0 right-0 h-[3px] rounded-t-3xl bg-gradient-to-r ${
                 isEditing ? "from-amber-400 to-orange-500" : "from-brand-500 to-indigo-600"
             }`} />
 

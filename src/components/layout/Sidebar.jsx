@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { Wallet } from "lucide-react";
 import {
@@ -17,11 +17,30 @@ import toast from "react-hot-toast";
 import { ScanLine } from "lucide-react";
 import { ENABLE_BUDGETS } from "../../context/FinanceContext";
 import { usePWA } from "../../hooks/usePWA";
+import UserAvatar from "../common/UserAvatar";
+import ProfileSettingsModal from "../modals/ProfileSettingsModal";
 
 const Sidebar = () => {
     const { closeSidebar } = useSidebar();
     const { user, logout } = useAuth();
     const { isInstallable, isSafariInstallable, installApp } = usePWA();
+
+    const [avatarStyle, setAvatarStyle] = useState("gradient_indigo");
+    const [sidebarDisplayName, setSidebarDisplayName] = useState("Guest User");
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+    useEffect(() => {
+        if (user) {
+            const name = user.displayName || user.email?.split("@")[0] || "Guest User";
+            setSidebarDisplayName(name);
+            const savedStyle = localStorage.getItem(`avatar_style_${user.uid}`) || "gradient_indigo";
+            setAvatarStyle(savedStyle);
+        } else {
+            setSidebarDisplayName("Guest User");
+            const savedStyle = localStorage.getItem("avatar_style_guest") || "gradient_indigo";
+            setAvatarStyle(savedStyle);
+        }
+    }, [user]);
 
     const handleLogout = async () => {
         try {
@@ -31,11 +50,6 @@ const Sidebar = () => {
             toast.error("Logout failed");
         }
     };
-
-    const displayName =
-        user?.displayName ||
-        user?.email?.split("@")[0] ||
-        "Guest User";
 
     const links = [
         {
@@ -237,24 +251,16 @@ const Sidebar = () => {
                 gap-3
             "
             >
-                <div className="flex items-center gap-3 min-w-0">
-                    <div
-                        className="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-gradient-to-tr
-                        from-brand-500
-                        to-indigo-600
-                        flex
-                        items-center
-                        justify-center
-                        text-white
-                        font-bold
-                    "
-                    >
-                        {displayName.charAt(0).toUpperCase()}
-                    </div>
+                <div
+                    onClick={() => setIsProfileOpen(true)}
+                    className="flex items-center gap-3 min-w-0 cursor-pointer hover:bg-slate-950/5 dark:hover:bg-white/5 p-1 rounded-xl transition-all duration-300 flex-1 group"
+                    title="Customize Profile"
+                >
+                    <UserAvatar
+                        styleId={avatarStyle}
+                        displayName={sidebarDisplayName}
+                        sizeClass="w-10 h-10 text-sm group-hover:scale-105 transition-transform"
+                    />
 
                     <div className="min-w-0">
                         <h4
@@ -264,9 +270,11 @@ const Sidebar = () => {
                             text-slate-800
                             dark:text-slate-200
                             truncate
+                            group-hover:text-brand-500
+                            transition-colors
                         "
                         >
-                            {displayName}
+                            {sidebarDisplayName}
                         </h4>
 
                         <p
@@ -277,7 +285,7 @@ const Sidebar = () => {
                             truncate
                         "
                         >
-                            {user?.email}
+                            {user?.email || "guest@finflow.com"}
                         </p>
                     </div>
                 </div>
@@ -302,6 +310,18 @@ const Sidebar = () => {
                     <FaSignOutAlt className="w-4 h-4" />
                 </button>
             </div>
+
+            <ProfileSettingsModal
+                isOpen={isProfileOpen}
+                onClose={() => setIsProfileOpen(false)}
+                user={user}
+                currentDisplayName={sidebarDisplayName}
+                currentStyleId={avatarStyle}
+                onSave={(newName, newStyle) => {
+                    setSidebarDisplayName(newName);
+                    setAvatarStyle(newStyle);
+                }}
+            />
         </aside>
     );
 };

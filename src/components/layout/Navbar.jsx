@@ -5,13 +5,40 @@ import { useSidebar } from "../../context/SidebarContext";
 import { useFinance, ENABLE_BUDGETS } from "../../context/FinanceContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePWA } from "../../hooks/usePWA";
+import { useAuth } from "../../context/AuthContext";
+import UserAvatar from "../common/UserAvatar";
+import ProfileSettingsModal from "../modals/ProfileSettingsModal";
 
 const Navbar = () => {
     const { toggleSidebar, isSidebarOpen } = useSidebar();
     const { isOnline, isSyncing, syncQueueLength } = useFinance();
     const { isInstallable, installApp } = usePWA();
+    const { user } = useAuth();
+
+    const [avatarStyle, setAvatarStyle] = useState("gradient_indigo");
+    const [navbarDisplayName, setNavbarDisplayName] = useState("Guest User");
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
     const notifRef = useRef(null);
+
+    useEffect(() => {
+        const loadProfile = () => {
+            if (user) {
+                const name = user.displayName || user.email?.split("@")[0] || "Guest User";
+                setNavbarDisplayName(name);
+                const savedStyle = localStorage.getItem(`avatar_style_${user.uid}`) || "gradient_indigo";
+                setAvatarStyle(savedStyle);
+            } else {
+                setNavbarDisplayName("Guest User");
+                const savedStyle = localStorage.getItem("avatar_style_guest") || "gradient_indigo";
+                setAvatarStyle(savedStyle);
+            }
+        };
+
+        loadProfile();
+        window.addEventListener("profile-updated", loadProfile);
+        return () => window.removeEventListener("profile-updated", loadProfile);
+    }, [user]);
 
     // Close notifications on click outside
     useEffect(() => {
@@ -218,7 +245,28 @@ const Navbar = () => {
 
                 {/* Theme toggle */}
                 <ThemeToggle />
+
+                {/* Minimized User Avatar */}
+                <UserAvatar
+                    styleId={avatarStyle}
+                    displayName={navbarDisplayName}
+                    sizeClass="w-8 h-8 sm:w-9 sm:h-9 text-xs sm:text-sm shadow-md"
+                    onClick={() => setIsProfileOpen(true)}
+                    className="hover:rotate-6 transition-transform"
+                />
             </div>
+
+            <ProfileSettingsModal
+                isOpen={isProfileOpen}
+                onClose={() => setIsProfileOpen(false)}
+                user={user}
+                currentDisplayName={navbarDisplayName}
+                currentStyleId={avatarStyle}
+                onSave={(newName, newStyle) => {
+                    setNavbarDisplayName(newName);
+                    setAvatarStyle(newStyle);
+                }}
+            />
         </header>
     );
 };

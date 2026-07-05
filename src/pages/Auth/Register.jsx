@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaLock, FaUser, FaCheck } from "react-icons/fa";
@@ -24,7 +24,10 @@ const Register = () => {
 
         setLoading(true);
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(userCredential.user, {
+                displayName: name.trim(),
+            });
             toast.success("Account Created! Welcome to FinFlow.");
             navigate("/");
         } catch (error) {

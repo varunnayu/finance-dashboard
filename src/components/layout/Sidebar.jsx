@@ -8,6 +8,7 @@ import {
     FaBullseye,
     FaHome,
     FaSignOutAlt,
+    FaDownload,
 } from "react-icons/fa";
 
 import { useSidebar } from "../../context/SidebarContext";
@@ -15,10 +16,12 @@ import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import { ScanLine } from "lucide-react";
 import { ENABLE_BUDGETS } from "../../context/FinanceContext";
+import { usePWA } from "../../hooks/usePWA";
 
 const Sidebar = () => {
     const { closeSidebar } = useSidebar();
     const { user, logout } = useAuth();
+    const { isInstallable, isSafariInstallable, installApp } = usePWA();
 
     const handleLogout = async () => {
         try {
@@ -67,7 +70,7 @@ const Sidebar = () => {
         },
         {
             path: "/ocr",
-            label: "Receipt Scanner",
+            label: "UPI Scanner",
             icon: <ScanLine className="w-5 h-5" />,
         }
     ].filter(Boolean);
@@ -176,6 +179,45 @@ const Sidebar = () => {
                     </NavLink>
                 ))}
             </nav>
+
+            {/* Install App Promo Card */}
+            {isInstallable && (
+                <div className="mx-4 mb-2 p-4 rounded-2xl bg-gradient-to-tr from-brand-500/10 to-indigo-600/10 border border-brand-500/10 hover:border-brand-500/25 transition-all duration-300 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-brand-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <h4 className="text-xs font-bold text-slate-800 dark:text-white mb-1 flex items-center gap-1.5">
+                        <FaDownload className="w-3.5 h-3.5 text-brand-500 dark:text-indigo-400 animate-pulse" />
+                        FinFlow Desktop
+                    </h4>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                        Install on your device for offline support & a native app experience.
+                    </p>
+                    <button
+                        onClick={installApp}
+                        className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-brand-500 to-indigo-600 hover:from-brand-600 hover:to-indigo-700 text-white text-xs font-bold shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                        <FaDownload className="w-3.5 h-3.5" />
+                        Install App
+                    </button>
+                </div>
+            )}
+
+            {/* iOS/Safari Install Helper Card */}
+            {isSafariInstallable && (
+                <div className="mx-4 mb-2 p-4 rounded-2xl bg-gradient-to-tr from-brand-500/10 to-indigo-600/10 border border-brand-500/10 hover:border-brand-500/25 transition-all duration-300 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-brand-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <h4 className="text-xs font-bold text-slate-800 dark:text-white mb-1 flex items-center gap-1.5">
+                        <FaDownload className="w-3.5 h-3.5 text-brand-500 dark:text-indigo-400" />
+                        Install on Safari
+                    </h4>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed mb-2">
+                        Get the native app experience on macOS/iOS:
+                    </p>
+                    <ol className="text-[10px] text-slate-600 dark:text-slate-300 space-y-1.5 pl-3 list-decimal font-medium">
+                        <li>Tap the **Share** button <span className="inline-block px-1 py-0.5 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-[9px] font-bold">⎙</span> or menu.</li>
+                        <li>Select **Add to Home Screen** (or **Add to Dock**).</li>
+                    </ol>
+                </div>
+            )}
 
             {/* User Card */}
             <div

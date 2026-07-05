@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useFinance } from "../../context/FinanceContext";
 import { motion } from "framer-motion";
 import TransactionForm from "../../components/transactions/TransactionForm";
@@ -14,44 +14,78 @@ const Transactions = () => {
     const [category, setCategory] = useState("all");
     const [type, setType] = useState("all");
     const [sort, setSort] = useState("latest");
+    const [datePreset, setDatePreset] = useState("all");
+    const [customDateFrom, setCustomDateFrom] = useState("");
+    const [customDateTo, setCustomDateTo] = useState("");
 
-    const filteredTransactions = transactions
-        .filter((item) =>
-            item.title
-                .toLowerCase()
-                .includes(search.toLowerCase())
-        )
-        .filter((item) =>
-            category === "all"
-                ? true
-                : item.category === category
-        )
-        .filter((item) =>
-            type === "all"
-                ? true
-                : item.type === type
-        )
-        .sort((a, b) => {
-            if (sort === "high")
-                return b.amount - a.amount;
+    // Date filtering helper
+    const getDateRange = () => {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-            if (sort === "low")
-                return a.amount - b.amount;
+        switch (datePreset) {
+            case "today":
+                return { from: today, to: new Date(today.getTime() + 86400000) };
+            case "yesterday": {
+                const yesterday = new Date(today.getTime() - 86400000);
+                return { from: yesterday, to: today };
+            }
+            case "7days":
+                return { from: new Date(today.getTime() - 7 * 86400000), to: new Date(today.getTime() + 86400000) };
+            case "30days":
+                return { from: new Date(today.getTime() - 30 * 86400000), to: new Date(today.getTime() + 86400000) };
+            case "custom":
+                return {
+                    from: customDateFrom ? new Date(customDateFrom) : null,
+                    to: customDateTo ? new Date(new Date(customDateTo).getTime() + 86400000) : null,
+                };
+            default:
+                return { from: null, to: null };
+        }
+    };
 
-            if (sort === "oldest")
-                return (
-                    new Date(a.date || 0) -
-                    new Date(b.date || 0)
-                );
+    const filteredTransactions = useMemo(() => {
+        const dateRange = getDateRange();
+        const searchLower = search.toLowerCase();
 
-            return (
-                new Date(b.date || 0) -
-                new Date(a.date || 0)
-            );
-        });
+        return transactions
+            .filter((item) => {
+                // Search across title, merchant, notes, refNumber, paymentApp
+                if (searchLower) {
+                    const searchableText = [
+                        item.title, item.merchant, item.notes,
+                        item.refNumber, item.paymentApp, item.bankName,
+                        item.category,
+                    ].filter(Boolean).join(" ").toLowerCase();
+                    if (!searchableText.includes(searchLower)) return false;
+                }
+                return true;
+            })
+            .filter((item) =>
+                category === "all" ? true : item.category === category
+            )
+            .filter((item) =>
+                type === "all" ? true : item.type === type
+            )
+            .filter((item) => {
+                // Date range filtering
+                if (!dateRange.from && !dateRange.to) return true;
+                const itemDate = new Date(item.date);
+                if (isNaN(itemDate.getTime())) return true;
+                if (dateRange.from && itemDate < dateRange.from) return false;
+                if (dateRange.to && itemDate >= dateRange.to) return false;
+                return true;
+            })
+            .sort((a, b) => {
+                if (sort === "high") return b.amount - a.amount;
+                if (sort === "low") return a.amount - b.amount;
+                if (sort === "oldest") return new Date(a.date || 0) - new Date(b.date || 0);
+                return new Date(b.date || 0) - new Date(a.date || 0);
+            });
+    }, [transactions, search, category, type, sort, datePreset, customDateFrom, customDateTo]);
 
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
@@ -99,7 +133,7 @@ const Transactions = () => {
                         setEditingTransaction={setEditingTransaction}
                     />
                 </div>
-                
+
                 <div className="lg:col-span-2 space-y-6">
                     <TransactionFilters
                         search={search}
@@ -110,6 +144,12 @@ const Transactions = () => {
                         setType={setType}
                         sort={sort}
                         setSort={setSort}
+                        datePreset={datePreset}
+                        setDatePreset={setDatePreset}
+                        customDateFrom={customDateFrom}
+                        setCustomDateFrom={setCustomDateFrom}
+                        customDateTo={customDateTo}
+                        setCustomDateTo={setCustomDateTo}
                     />
 
                     <TransactionList

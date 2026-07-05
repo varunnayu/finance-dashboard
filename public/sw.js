@@ -40,7 +40,7 @@ self.addEventListener("fetch", (event) => {
 
   // Network-only or Network-First for dynamic/API/Firebase/OAuth requests
   if (
-    event.request.method !== "GET" || 
+    event.request.method !== "GET" ||
     requestUrl.origin !== self.location.origin ||
     event.request.url.includes("googleapis") ||
     event.request.url.includes("firebase")
@@ -64,7 +64,7 @@ self.addEventListener("fetch", (event) => {
               cache.put(event.request, networkResponse);
             });
           }
-        }).catch(() => {/* Ignore background fetch errors */});
+        }).catch(() => {/* Ignore background fetch errors */ });
 
         return cachedResponse;
       }

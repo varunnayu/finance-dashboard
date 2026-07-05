@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useFinance } from "../../context/FinanceContext";
 import toast from "react-hot-toast";
 import Dropdown from "../ui/Dropdown";
+import { CATEGORY_VALUES, CATEGORY_OPTIONS } from "../../constants/categories";
 
-const PREDEFINED_LIST = ["Food", "Travel", "Shopping", "Bills", "Health", "Education", "Salary", "Given", "Spent", "Received", "Paylater"];
+const PREDEFINED_LIST = CATEGORY_VALUES;
 
 const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
     const { addTransaction, updateTransaction } = useFinance();
@@ -161,18 +162,8 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
                         value={formData.category}
                         onChange={(val) => setFormData(p => ({ ...p, category: val }))}
                         options={[
-                            { value: "Food", label: "Food" },
-                            { value: "Travel", label: "Travel" },
-                            { value: "Shopping", label: "Shopping" },
-                            { value: "Bills", label: "Bills" },
-                            { value: "Health", label: "Health" },
-                            { value: "Education", label: "Education" },
-                            { value: "Salary", label: "Salary" },
-                            { value: "Given", label: "Given" },
-                            { value: "Spent", label: "Spent" },
-                            { value: "Received", label: "Received" },
-                            { value: "Paylater", label: "Paylater" },
-                            { value: "custom", label: "Custom Category..." },
+                            ...CATEGORY_OPTIONS,
+                            { value: "custom", label: "✏️ Custom Category..." },
                         ]}
                     />
                 </div>

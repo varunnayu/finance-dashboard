@@ -16,7 +16,7 @@ export const useFirestoreTransactions = () => {
 
     useEffect(() => {
         const loadTransactions = async () => {
-            if (!user || user.uid === "demo-user") {
+            if (!user) {
                 setLoading(false);
                 return;
             }

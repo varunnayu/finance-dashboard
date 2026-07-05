@@ -50,7 +50,7 @@ export const FinanceProvider = ({ children }) => {
     // Load user-specific transactions from Firestore or local storage fallback
     useEffect(() => {
         const loadUserTransactions = async () => {
-            if (user && user.uid !== "demo-user") {
+            if (user) {
                 if (isOnline) {
                     try {
                         setIsSyncing(true);
@@ -98,7 +98,7 @@ export const FinanceProvider = ({ children }) => {
 
     // Save transactions to user-specific or general local storage
     useEffect(() => {
-        if (user && user.uid !== "demo-user") {
+        if (user) {
             localStorage.setItem(
                 `transactions_${user.uid}`,
                 JSON.stringify(transactions)
@@ -122,7 +122,7 @@ export const FinanceProvider = ({ children }) => {
 
     // Perform batch synchronization once network connection is restored
     useEffect(() => {
-        if (isOnline && syncQueue.length > 0 && user && user.uid !== "demo-user") {
+        if (isOnline && syncQueue.length > 0 && user) {
             const processSyncQueue = async () => {
                 setIsSyncing(true);
                 toast.loading("Syncing offline changes with cloud...", { id: "sync-toast" });
@@ -168,7 +168,7 @@ export const FinanceProvider = ({ children }) => {
         };
         setTransactions((prev) => [...prev, newTransaction]);
 
-        if (user && user.uid !== "demo-user") {
+        if (user) {
             if (isOnline) {
                 try {
                     triggerDirectSync();
@@ -194,7 +194,7 @@ export const FinanceProvider = ({ children }) => {
     const deleteTransaction = async (id) => {
         setTransactions((prev) => prev.filter((item) => item.id !== id));
 
-        if (user && user.uid !== "demo-user") {
+        if (user) {
             if (isOnline) {
                 try {
                     triggerDirectSync();
@@ -223,7 +223,7 @@ export const FinanceProvider = ({ children }) => {
             )
         );
 
-        if (user && user.uid !== "demo-user") {
+        if (user) {
             if (isOnline) {
                 try {
                     triggerDirectSync();

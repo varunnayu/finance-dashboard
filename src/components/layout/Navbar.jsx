@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import ThemeToggle from "./ThemeToggle";
-import { FaBars, FaRegBell, FaCloud, FaSync, FaExclamationTriangle } from "react-icons/fa";
+import { FaBars, FaRegBell, FaCloud, FaSync, FaExclamationTriangle, FaDownload } from "react-icons/fa";
 import { useSidebar } from "../../context/SidebarContext";
 import { useFinance, ENABLE_BUDGETS } from "../../context/FinanceContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePWA } from "../../hooks/usePWA";
 
 const Navbar = () => {
     const { toggleSidebar, isSidebarOpen } = useSidebar();
     const { isOnline, isSyncing, syncQueueLength } = useFinance();
+    const { isInstallable, installApp } = usePWA();
     const [showNotifications, setShowNotifications] = useState(false);
     const notifRef = useRef(null);
 
@@ -86,6 +88,38 @@ const Navbar = () => {
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
+                {/* Install App Button */}
+                {isInstallable && (
+                    <button
+                        onClick={installApp}
+                        className="
+                            w-10
+                            h-10
+                            flex
+                            items-center
+                            justify-center
+                            rounded-xl
+                            bg-brand-500/10
+                            dark:bg-brand-500/20
+                            border
+                            border-brand-500/20
+                            text-brand-600
+                            dark:text-brand-400
+                            hover:bg-brand-500/20
+                            dark:hover:bg-brand-500/30
+                            hover:scale-105
+                            active:scale-95
+                            transition-all
+                            duration-300
+                            cursor-pointer
+                            flex-shrink-0
+                        "
+                        title="Install App"
+                    >
+                        <FaDownload className="w-4 h-4 animate-bounce" style={{ animationDuration: "2s" }} />
+                    </button>
+                )}
+
                 {/* Sync Status Badge */}
                 <div className={`
                     w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-300 flex-shrink-0

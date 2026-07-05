@@ -39,19 +39,7 @@ export const AuthProvider = ({
     }, []);
 
     const logout = () => {
-        if (user && user.uid === "demo-user") {
-            setUser(null);
-        } else {
-            return signOut(auth);
-        }
-    };
-
-    const loginAsDemo = () => {
-        setUser({
-            email: "demo@finflow.com",
-            displayName: "Varun K T (Demo)",
-            uid: "demo-user",
-        });
+        return signOut(auth);
     };
 
     return (
@@ -59,7 +47,6 @@ export const AuthProvider = ({
             value={{
                 user,
                 logout,
-                loginAsDemo,
             }}
         >
             {!loading && children}

@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
-import { useAuth } from "../../context/AuthContext";
 import { motion } from "framer-motion";
-import { FaEnvelope, FaLock, FaGoogle, FaUserCircle, FaMicrochip } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaGoogle, FaUserCircle } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 const Login = () => {
-    const { loginAsDemo } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -174,40 +172,6 @@ const Login = () => {
                     >
                         <FaGoogle className="text-rose-500 w-3.5 h-3.5" />
                         <span>Google Sign In</span>
-                    </button>
-
-                    {/* Guest / Demo Sign In */}
-                    <button
-                        onClick={() => {
-                            loginAsDemo();
-                            toast.success("Welcome! Signed in as Guest");
-                            navigate("/");
-                        }}
-                        type="button"
-                        className="
-                            w-full
-                            py-3
-                            rounded-2xl
-                            font-bold
-                            text-xs
-                            text-white
-                            bg-gradient-to-r
-                            from-violet-600
-                            to-fuchsia-600
-                            hover:from-violet-700
-                            hover:to-fuchsia-700
-                            shadow-lg
-                            shadow-violet-500/15
-                            flex
-                            items-center
-                            justify-center
-                            gap-2
-                            transition-all
-                            cursor-pointer
-                        "
-                    >
-                        <FaMicrochip className="text-white w-3.5 h-3.5" />
-                        <span>Sign In as Guest (Demo)</span>
                     </button>
                 </div>
 

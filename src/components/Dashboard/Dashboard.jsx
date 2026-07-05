@@ -14,7 +14,6 @@ import AIRecommendationCard from "./AIRecommendationCard";
 import HealthWidget from "./HealthWidget";
 import ExpenseTrendChart from "./ExpenseTrendChart";
 import TopCategories from "./TopCategories";
-import MonthlySummary from "./MonthlySummary";
 import ExportReportButton
     from "./ExportReportButton";
 
@@ -84,7 +83,6 @@ const Dashboard = () => {
                 <TopCategories />
             </div>
 
-            <MonthlySummary />
             <div className="grid lg:grid-cols-2 gap-6 mt-6">
                 <HealthWidget />
                 <AIRecommendationCard />
